@@ -1,7 +1,9 @@
 # cowrie-elastic-stack
+
 Build honeypot with Cowrie, and Analyze the logs with Elastic Stack
 
 ## Configuration
+
 * Docker Compose
 * Cowrie SSH/Telnet honeypot
 * Elastic Stack
@@ -11,10 +13,12 @@ Build honeypot with Cowrie, and Analyze the logs with Elastic Stack
   * Logstash
 
 ## System requirements
+
 * 2GB RAM
 * 20GB free Space
 
 ## How to build the environment
+
 1. Update the package to the latest version
 
 ```bash
@@ -62,7 +66,6 @@ You will need to create the following directory and files:
   * cowrie/log/cowrie.json
   * cowrie/config/cowrie.cfg
   * cowrie/config/userdb.txt
-
 
 ```bash
 mkdir cowrie/log/

@@ -1,42 +1,43 @@
 version: "3"
 services:
   cowrie:
+    hostname: cowrie
     image: cowrie/cowrie
     ports:
       - "22:22"
-      - "23:23"
-      - "2222:2222"
-      - "2323:2323"
     volumes:
       - ./cowrie/config/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg
       - ./cowrie/config/userdb.txt:/cowrie/cowrie-git/etc/userdb.txt
       - ./cowrie/log/cowrie.json:/cowrie/cowrie-git/var/log/cowrie/cowrie.json
   elasticsearch:
-    build: ./elasticsearch
+    hostname: elasticsearch
+    image: elasticsearch:8.5.3
     environment:
       ES_JAVA_OPTS: -Xms256m -Xmx256m
       discovery.type: single-node
     ports:
       - "9200:9200"
     volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - elasticsearch:/usr/share/elasticsearch/data
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /Users/juli/elastic:/usr/share/elasticsearch/data
     networks:
       - elastic
   kibana:
-    build: ./kibana
+    image: kibana:8.5.3
+    hostname: kibana
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     ports:
       - "5601:5601"
     volumes:
-      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch
     networks:
       - elastic
   logstash:
-    build: ./logstash
+    image: logstash:8.5.3
+    hostname: logstash
     ports:
       - "5044:5044"
     volumes: 
@@ -49,17 +50,15 @@ services:
     networks:
       - elastic
   filebeat:
-    build: ./filebeat
+    image: docker.elastic.co/beats/filebeat:8.5.3
+    hostname: filebeat
     volumes:
       - ./cowrie/log/cowrie.json:/var/log/cowrie/cowrie.json
-      - ./filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
     depends_on:
       - elasticsearch
     networks:
       - elastic
-
-volumes:
-  elasticsearch:
 
 networks:
   elastic:
